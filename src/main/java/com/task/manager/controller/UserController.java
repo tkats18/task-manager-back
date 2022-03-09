@@ -3,7 +3,7 @@ package com.task.manager.controller;
 import com.task.manager.dto.GenericResponse;
 import com.task.manager.dto.user.UserLoginRequest;
 import com.task.manager.dto.user.UserRegisterRequest;
-import com.task.manager.service.UserService;
+import com.task.manager.service.task.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

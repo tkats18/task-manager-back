@@ -1,4 +1,4 @@
-package com.task.manager.service;
+package com.task.manager.service.task;
 
 import com.task.manager.dto.GenericResponse;
 import com.task.manager.dto.task.TaskAddRequest;

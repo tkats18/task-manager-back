@@ -5,7 +5,7 @@ import com.task.manager.dto.task.TaskAddRequest;
 import com.task.manager.dto.task.TaskAssignRequest;
 import com.task.manager.dto.task.TaskFilterRequest;
 import com.task.manager.dto.task.TaskStatusChangeRequest;
-import com.task.manager.service.TaskService;
+import com.task.manager.service.task.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
