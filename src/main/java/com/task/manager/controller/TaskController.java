@@ -32,7 +32,7 @@ public class TaskController {
     }
 
     @RequestMapping(value = "{taskId}/status", method = RequestMethod.PUT)
-    public GenericResponse changeStatus(@RequestBody TaskStatusChangeRequest taskStatusChangeRequest) {
+    public GenericResponse changeStatus(@PathVariable Long taskId, @RequestBody TaskStatusChangeRequest taskStatusChangeRequest) {
         return null;
     }
 
