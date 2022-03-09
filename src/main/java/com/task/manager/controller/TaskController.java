@@ -5,35 +5,43 @@ import com.task.manager.dto.task.TaskAddRequest;
 import com.task.manager.dto.task.TaskAssignRequest;
 import com.task.manager.dto.task.TaskFilterRequest;
 import com.task.manager.dto.task.TaskStatusChangeRequest;
+import com.task.manager.service.TaskService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController()
 @RequestMapping(value = "/api/v1/task", produces = "application/json")
 public class TaskController {
 
+    private TaskService taskService;
+
     @RequestMapping(value = "add", method = RequestMethod.POST)
     public GenericResponse addTask(@RequestBody TaskAddRequest taskAddRequest) {
-        return null;
+        return taskService.addTask(taskAddRequest);
     }
 
-    @RequestMapping(value = "{taskId}/assign", method = RequestMethod.PUT)
-    public GenericResponse assignTask(@PathVariable Long taskId, @RequestBody TaskAssignRequest taskAssignRequest) {
-        return null;
+    @RequestMapping(value = "{taskKey}/assign", method = RequestMethod.PUT)
+    public GenericResponse assignTask(@PathVariable String taskKey, @RequestBody TaskAssignRequest taskAssignRequest) {
+        return taskService.assignTask(taskKey, taskAssignRequest);
     }
 
     @RequestMapping(value = "search", method = RequestMethod.POST)
     public GenericResponse searchTasks(@RequestBody TaskFilterRequest taskFilterRequest) {
-        return null;
+        return taskService.searchTasks(taskFilterRequest);
     }
 
-    @RequestMapping(value = "{taskId}/delete", method = RequestMethod.DELETE)
-    public GenericResponse deleteTask(@PathVariable Long taskId) {
-        return null;
+    @RequestMapping(value = "{taskKey}/delete", method = RequestMethod.DELETE)
+    public GenericResponse deleteTask(@PathVariable String taskKey) {
+        return taskService.deleteTask(taskKey);
     }
 
-    @RequestMapping(value = "{taskId}/status", method = RequestMethod.PUT)
-    public GenericResponse changeStatus(@PathVariable Long taskId, @RequestBody TaskStatusChangeRequest taskStatusChangeRequest) {
-        return null;
+    @RequestMapping(value = "{taskKey}/status", method = RequestMethod.PUT)
+    public GenericResponse changeStatus(@PathVariable String taskKey, @RequestBody TaskStatusChangeRequest taskStatusChangeRequest) {
+        return taskService.changeStatus(taskKey, taskStatusChangeRequest);
     }
 
+    @Autowired
+    public void setTaskService(TaskService taskService) {
+        this.taskService = taskService;
+    }
 }

@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "USERS")
@@ -40,5 +41,11 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "task_id"))
     private List<Task> tasks;
 
+
+    public static User createUser(){
+        User user = new User();
+        user.setUserBusinessKey(UUID.randomUUID().toString());
+        return user;
+    }
 
 }

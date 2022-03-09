@@ -8,6 +8,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "TASK")
@@ -37,8 +38,18 @@ public class Task {
     @ManyToMany(mappedBy = "tasks")
     private Set<User> assignees;
 
+    @Column(name = "TASK_STATUS", nullable = false)
+    private TaskStatus taskStatus;
+
     @OneToOne()
     private User creator;
+
+    public static Task createTask() {
+        Task task = new Task();
+        task.setTaskBusinessKey(UUID.randomUUID().toString());
+        task.setTaskStatus(TaskStatus.NOT_DONE);
+        return task;
+    }
 
 
     public enum TaskStatus{
