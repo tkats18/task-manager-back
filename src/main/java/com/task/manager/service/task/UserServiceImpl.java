@@ -8,7 +8,7 @@ import com.task.manager.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
         User user = User.createUser();
         user.setEmail(userRegisterRequest.getEmail());
         user.setFullName(userRegisterRequest.getFullName());
-        user.setPassword(Arrays.toString(userRegisterRequest.getPassword()));
+        user.setPassword(String.valueOf(userRegisterRequest.getPassword()));
 
         userRepository.save(user);
         return GenericResponse.noReturnValue();
@@ -38,7 +38,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUser(String email) {
-        return null;
+        return userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("USER_NOT_EXISTS"));
+    }
+
+    @Override
+    public List<User> searchUsers() {
+        return userRepository.findAll();
     }
 
 }

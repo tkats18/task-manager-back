@@ -4,6 +4,13 @@ public class GenericResponse {
 
     private Object data;
 
+    public GenericResponse(Object data) {
+        this.data = data;
+    }
+
+    public GenericResponse() {
+    }
+
     public static GenericResponse noReturnValue(){
         GenericResponse genericResponse = new GenericResponse();
         genericResponse.data = null;
@@ -16,4 +23,11 @@ public class GenericResponse {
         return genericResponse;
     }
 
+    public Object getData() {
+        return data;
+    }
+
+    public void setData(Object data) {
+        this.data = data;
+    }
 }

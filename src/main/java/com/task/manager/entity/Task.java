@@ -1,5 +1,6 @@
 package com.task.manager.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,7 +36,8 @@ public class Task {
     @Column(name = "TASK_BUSINESS_KEY", unique = true)
     private String taskBusinessKey;
 
-    @ManyToMany(mappedBy = "tasks")
+    @ManyToMany(mappedBy = "tasks", cascade = {CascadeType.MERGE, CascadeType.PERSIST,CascadeType.REFRESH})
+    @JsonIgnore
     private Set<User> assignees;
 
     @Column(name = "TASK_STATUS", nullable = false)
@@ -72,4 +74,15 @@ public class Task {
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof Task)) {
+            return false;
+        }
+        Task t = (Task) o;
+        return t.taskBusinessKey.equals(taskBusinessKey);
+    }
 }

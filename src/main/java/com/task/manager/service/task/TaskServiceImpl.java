@@ -13,9 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TaskServiceImpl implements TaskService {
@@ -30,9 +32,14 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Transactional
     public Task assignTask(String taskKey, TaskAssignRequest taskAssignRequest) {
         Task task = getTask(taskKey);
-        List<User> users = userRepository.findAllByUserBusinessKeyIn(taskAssignRequest.getUsers());
+
+        List<User> users = userRepository.findAllByUserBusinessKeyIn(
+                taskAssignRequest.getUsers()
+        ).stream().map(user -> user.addTask(task)).collect(Collectors.toList());
+        userRepository.saveAll(users);
 
         task.setAssignees(new HashSet<>(users));
         return taskRepository.save(task);
@@ -48,14 +55,17 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public void deleteTask(String taskKey) {
         Task task = getTask(taskKey);
+
+        List<User> users = userRepository.findAll().stream().map(user -> user.deleteTask(task)).collect(Collectors.toList());
+        userRepository.saveAll(users);
+
         taskRepository.delete(task);
     }
 
     @Override
-    public Object searchTasks(TaskFilterRequest taskFilterRequest) {
+    public List<Task> searchTasks(TaskFilterRequest taskFilterRequest) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        TODO
-        return null;
+        return taskRepository.findAll();
     }
 
     @Override

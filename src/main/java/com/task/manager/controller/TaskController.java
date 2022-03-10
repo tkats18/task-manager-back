@@ -5,35 +5,38 @@ import com.task.manager.dto.task.TaskAddRequest;
 import com.task.manager.dto.task.TaskAssignRequest;
 import com.task.manager.dto.task.TaskFilterRequest;
 import com.task.manager.dto.task.TaskStatusChangeRequest;
+import com.task.manager.entity.Task;
 import com.task.manager.service.task.TaskServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController()
 @RequestMapping(value = "/api/v1/task", produces = "application/json")
+@CrossOrigin("*")
 public class TaskController {
 
     private TaskServiceImpl taskService;
 
     @RequestMapping(value = "add", method = RequestMethod.POST)
-    public GenericResponse addTask(@RequestBody TaskAddRequest taskAddRequest) {
-        return GenericResponse.successObject(taskService.addTask(taskAddRequest));
+    public Task addTask(@RequestBody TaskAddRequest taskAddRequest) {
+        return taskService.addTask(taskAddRequest);
     }
 
     @RequestMapping(value = "{taskKey}/assign", method = RequestMethod.PUT)
-    public GenericResponse assignTask(@PathVariable String taskKey, @RequestBody TaskAssignRequest taskAssignRequest) {
-        return GenericResponse.successObject(taskService.assignTask(taskKey, taskAssignRequest));
+    public Task assignTask(@PathVariable String taskKey, @RequestBody TaskAssignRequest taskAssignRequest) {
+        return taskService.assignTask(taskKey, taskAssignRequest);
     }
 
     @RequestMapping(value = "search", method = RequestMethod.POST)
-    public GenericResponse searchTasks(@RequestBody TaskFilterRequest taskFilterRequest) {
-        return GenericResponse.successObject(taskService.searchTasks(taskFilterRequest));
+    public List<Task> searchTasks(@RequestBody TaskFilterRequest taskFilterRequest) {
+        return taskService.searchTasks(taskFilterRequest);
     }
 
     @RequestMapping(value = "{taskKey}/delete", method = RequestMethod.DELETE)
-    public GenericResponse deleteTask(@PathVariable String taskKey) {
+    public void deleteTask(@PathVariable String taskKey) {
         taskService.deleteTask(taskKey);
-        return GenericResponse.noReturnValue();
     }
 
     @RequestMapping(value = "{taskKey}/status", method = RequestMethod.PUT)

@@ -34,7 +34,7 @@ public class User {
     @Column(name = "USER_BUSINESS_KEY", unique = true)
     private String userBusinessKey;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
     @JoinTable(
             name = "TASK_ASSIGNEES",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -46,6 +46,17 @@ public class User {
         User user = new User();
         user.setUserBusinessKey(UUID.randomUUID().toString());
         return user;
+    }
+
+    public User addTask(Task task){
+        this.tasks.add(task);
+        return this;
+    }
+
+
+    public User deleteTask(Task task){
+        this.tasks.remove(task);
+        return this;
     }
 
 }

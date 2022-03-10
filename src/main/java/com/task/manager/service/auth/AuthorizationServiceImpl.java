@@ -29,7 +29,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
         try {
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(userLoginRequest.getEmail(), Arrays.toString(userLoginRequest.getPassword()))
+                    new UsernamePasswordAuthenticationToken(userLoginRequest.getEmail(), String.valueOf(userLoginRequest.getPassword()))
             );
         }catch (Exception e){
             throw new RuntimeException("INVALID_CREDENTIALS");
@@ -46,8 +46,8 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
     @Override
     public UserAuthorizationResponse register(@RequestBody UserRegisterRequest userRegisterRequest){
-        String prevPassword = Arrays.toString(userRegisterRequest.getPassword());
-        userRegisterRequest.setPassword(new BCryptPasswordEncoder().encode(Arrays.toString(userRegisterRequest.getPassword())).toCharArray());
+        String prevPassword = String.valueOf(userRegisterRequest.getPassword());
+        userRegisterRequest.setPassword(new BCryptPasswordEncoder().encode(String.valueOf(userRegisterRequest.getPassword())).toCharArray());
         userService.addUser(userRegisterRequest);
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(userRegisterRequest.getEmail(),prevPassword)
