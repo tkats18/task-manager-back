@@ -1,8 +1,6 @@
 package com.task.manager.controller;
 
-import com.task.manager.dto.task.TaskFilterRequest;
-import com.task.manager.entity.Task;
-import com.task.manager.entity.User;
+import com.task.manager.dto.user.UserResponse;
 import com.task.manager.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +15,7 @@ public class UserController {
     private UserService userService;
 
     @RequestMapping(value = "search", method = RequestMethod.GET)
-    public List<User> searchTasks() {
+    public List<UserResponse> searchTasks() {
         return userService.searchUsers();
     }
 

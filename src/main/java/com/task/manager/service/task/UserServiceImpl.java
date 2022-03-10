@@ -1,7 +1,7 @@
 package com.task.manager.service.task;
 
-import com.task.manager.dto.GenericResponse;
 import com.task.manager.dto.user.UserRegisterRequest;
+import com.task.manager.dto.user.UserResponse;
 import com.task.manager.entity.User;
 import com.task.manager.repository.UserRepository;
 import com.task.manager.service.UserService;
@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -21,7 +22,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public GenericResponse addUser(UserRegisterRequest userRegisterRequest) {
+    public void addUser(UserRegisterRequest userRegisterRequest) {
 
         if (userRepository.findByEmail(userRegisterRequest.getEmail()).isPresent()){
             throw new RuntimeException("USER_EXISTS");
@@ -33,7 +34,6 @@ public class UserServiceImpl implements UserService {
         user.setPassword(String.valueOf(userRegisterRequest.getPassword()));
 
         userRepository.save(user);
-        return GenericResponse.noReturnValue();
     }
 
     @Override
@@ -42,8 +42,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> searchUsers() {
-        return userRepository.findAll();
+    public List<UserResponse> searchUsers() {
+        return userRepository.findAll().stream().map(UserResponse::new).collect(Collectors.toList());
     }
 
 }

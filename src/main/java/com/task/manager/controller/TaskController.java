@@ -1,6 +1,5 @@
 package com.task.manager.controller;
 
-import com.task.manager.dto.GenericResponse;
 import com.task.manager.dto.task.*;
 import com.task.manager.service.task.TaskServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +35,8 @@ public class TaskController {
     }
 
     @RequestMapping(value = "{taskKey}/status", method = RequestMethod.PUT)
-    public GenericResponse changeStatus(@PathVariable String taskKey, @RequestBody TaskStatusChangeRequest taskStatusChangeRequest) {
-        return GenericResponse.successObject(taskService.changeStatus(taskKey, taskStatusChangeRequest));
+    public TaskResponse changeStatus(@PathVariable String taskKey, @RequestBody TaskStatusChangeRequest taskStatusChangeRequest) {
+        return taskService.changeStatus(taskKey, taskStatusChangeRequest);
     }
 
     @Autowired

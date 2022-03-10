@@ -2,7 +2,6 @@ package com.task.manager.dto.task;
 
 import com.task.manager.dto.user.UserResponse;
 import com.task.manager.entity.Task;
-import com.task.manager.entity.User;
 import com.task.manager.util.Timeline;
 import com.task.manager.util.Utils;
 import lombok.AllArgsConstructor;
@@ -13,7 +12,6 @@ import lombok.Setter;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
