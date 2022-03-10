@@ -11,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -71,23 +68,8 @@ public class TaskServiceImpl implements TaskService {
     public List<TaskResponse> searchTasks(TaskFilterRequest taskFilterRequest) {
         User authenticatedUser = Utils.getAuthenticatedUser();
 
-        List<String> keys = taskFilterRequest.getUserFilter() == null ? new ArrayList<>() : taskFilterRequest.getUserFilter();
-        keys.add(authenticatedUser.getUserBusinessKey());
-
-        List<User> assignedUsers = userRepository.findAllByUserBusinessKeyIn(keys);
-        List<Task> creatorTasks = taskRepository.findAllByCreator(authenticatedUser);
-
-        Set<String> taskIds = new HashSet<>();
-        for (User user: assignedUsers) {
-            taskIds.addAll(user.getTasks().stream().map(Task::getTaskBusinessKey).collect(Collectors.toList()));
-        }
-        for (Task task: creatorTasks) {
-            taskIds.add(task.getTaskBusinessKey());
-        }
-
-        List<Task.TaskStatus> taskStatuses = taskFilterRequest.getStatusFilter() == null || taskFilterRequest.getStatusFilter().size() ==0 ? Utils.AllTaskStatuses() : taskFilterRequest.getStatusFilter();
-
-
+        Set<String> taskIds = mergerTaskFilters(taskFilterRequest, authenticatedUser);
+        List<Task.TaskStatus> taskStatuses = taskFilterRequest.getStatusFilter() == null || taskFilterRequest.getStatusFilter().size() == 0 ? Utils.AllTaskStatuses() : taskFilterRequest.getStatusFilter();
 
         return taskRepository.findAllByTaskBusinessKeyInAndTaskStatusInAndDueDateBeforeAndDueDateAfter(
                 new ArrayList<>(taskIds),
@@ -116,6 +98,34 @@ public class TaskServiceImpl implements TaskService {
         return taskRepository.findByTaskBusinessKey(taskKey).orElseThrow(() ->
                 new RuntimeException("TASK_DOES_NOT_EXIST")
         );
+    }
+
+    private Set<String> taskIds(List<String> userBusinessKeys) {
+        if (userBusinessKeys == null || userBusinessKeys.size() == 0) {
+            return new HashSet<>();
+        }
+
+        Set<String> taskIds = new HashSet<>();
+        List<User> users = userRepository.findAllByUserBusinessKeyIn(userBusinessKeys);
+        for (User user : users) {
+            taskIds.addAll(user.getTasks().stream().map(Task::getTaskBusinessKey).collect(Collectors.toList()));
+        }
+        return taskIds;
+    }
+
+    private Set<String> mergerTaskFilters(TaskFilterRequest taskFilterRequest, User authenticatedUser) {
+        List<Task> creatorTasks = taskRepository.findAllByCreator(authenticatedUser);
+
+        Set<String> taskIds = taskIds(Collections.singletonList(authenticatedUser.getUserBusinessKey()));
+        Set<String> userFilterTasks = taskIds(taskFilterRequest.getUserFilter()) ;
+
+        for (Task task : creatorTasks) {
+            taskIds.add(task.getTaskBusinessKey());
+        }
+        if (userFilterTasks.size() != 0){
+            taskIds = userFilterTasks.stream().filter(taskIds::contains).collect(Collectors.toSet());
+        }
+        return taskIds;
     }
 
 }
