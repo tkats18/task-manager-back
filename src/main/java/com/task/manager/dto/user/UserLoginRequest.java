@@ -1,16 +1,17 @@
 package com.task.manager.dto.user;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
-//@NoArgsConstructor
-//@AllArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString(exclude = "password")
 public class UserLoginRequest {
 
 
+    private String email;
+
+    private char [] password;
 
 }

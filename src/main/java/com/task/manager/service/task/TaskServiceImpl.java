@@ -1,6 +1,5 @@
 package com.task.manager.service.task;
 
-import com.task.manager.dto.GenericResponse;
 import com.task.manager.dto.task.TaskAddRequest;
 import com.task.manager.dto.task.TaskAssignRequest;
 import com.task.manager.dto.task.TaskFilterRequest;
@@ -9,18 +8,20 @@ import com.task.manager.entity.Task;
 import com.task.manager.entity.User;
 import com.task.manager.repository.TaskRepository;
 import com.task.manager.repository.UserRepository;
+import com.task.manager.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
 
 @Service
-public class TaskService {
+public class TaskServiceImpl implements TaskService {
 
     private TaskRepository taskRepository;
     private UserRepository userRepository;
-//    private final  jwtTokenUtil;
 
     @Autowired
     public void setTaskService(TaskRepository taskRepository, UserRepository userRepository) {
@@ -28,33 +29,37 @@ public class TaskService {
         this.userRepository = userRepository;
     }
 
-    public GenericResponse assignTask(String taskKey, TaskAssignRequest taskAssignRequest) {
+    @Override
+    public Task assignTask(String taskKey, TaskAssignRequest taskAssignRequest) {
         Task task = getTask(taskKey);
         List<User> users = userRepository.findAllByUserBusinessKeyIn(taskAssignRequest.getUsers());
 
         task.setAssignees(new HashSet<>(users));
-        taskRepository.save(task);
-        return GenericResponse.noReturnValue();
+        return taskRepository.save(task);
     }
 
-    public GenericResponse changeStatus(String taskKey, TaskStatusChangeRequest taskStatusChangeRequest) {
+    @Override
+    public Task changeStatus(String taskKey, TaskStatusChangeRequest taskStatusChangeRequest) {
         Task task = getTask(taskKey);
         task.setTaskStatus(taskStatusChangeRequest.getTaskStatus());
-        taskRepository.save(task);
-        return GenericResponse.noReturnValue();
+        return taskRepository.save(task);
     }
 
-    public GenericResponse deleteTask(String taskKey) {
+    @Override
+    public void deleteTask(String taskKey) {
         Task task = getTask(taskKey);
         taskRepository.delete(task);
-        return GenericResponse.noReturnValue();
     }
 
-    public GenericResponse searchTasks(TaskFilterRequest taskFilterRequest) {
+    @Override
+    public Object searchTasks(TaskFilterRequest taskFilterRequest) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        TODO
         return null;
     }
 
-    public GenericResponse addTask(TaskAddRequest taskAddRequest) {
+    @Override
+    public Task addTask(TaskAddRequest taskAddRequest) {
         if (taskRepository.findByTitle(taskAddRequest.getTitle()).isPresent()) {
             throw new RuntimeException("TASK_EXISTS");
         }
@@ -64,8 +69,7 @@ public class TaskService {
         task.setDueDate(taskAddRequest.getDueDate());
         task.setTitle(taskAddRequest.getTitle());
 
-        taskRepository.save(task);
-        return GenericResponse.noReturnValue();
+        return taskRepository.save(task);
     }
 
     private Task getTask(String taskKey) {

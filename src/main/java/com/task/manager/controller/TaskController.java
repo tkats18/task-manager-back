@@ -5,7 +5,7 @@ import com.task.manager.dto.task.TaskAddRequest;
 import com.task.manager.dto.task.TaskAssignRequest;
 import com.task.manager.dto.task.TaskFilterRequest;
 import com.task.manager.dto.task.TaskStatusChangeRequest;
-import com.task.manager.service.task.TaskService;
+import com.task.manager.service.task.TaskServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,35 +13,36 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/api/v1/task", produces = "application/json")
 public class TaskController {
 
-    private TaskService taskService;
+    private TaskServiceImpl taskService;
 
     @RequestMapping(value = "add", method = RequestMethod.POST)
     public GenericResponse addTask(@RequestBody TaskAddRequest taskAddRequest) {
-        return taskService.addTask(taskAddRequest);
+        return GenericResponse.successObject(taskService.addTask(taskAddRequest));
     }
 
     @RequestMapping(value = "{taskKey}/assign", method = RequestMethod.PUT)
     public GenericResponse assignTask(@PathVariable String taskKey, @RequestBody TaskAssignRequest taskAssignRequest) {
-        return taskService.assignTask(taskKey, taskAssignRequest);
+        return GenericResponse.successObject(taskService.assignTask(taskKey, taskAssignRequest));
     }
 
     @RequestMapping(value = "search", method = RequestMethod.POST)
     public GenericResponse searchTasks(@RequestBody TaskFilterRequest taskFilterRequest) {
-        return taskService.searchTasks(taskFilterRequest);
+        return GenericResponse.successObject(taskService.searchTasks(taskFilterRequest));
     }
 
     @RequestMapping(value = "{taskKey}/delete", method = RequestMethod.DELETE)
     public GenericResponse deleteTask(@PathVariable String taskKey) {
-        return taskService.deleteTask(taskKey);
+        taskService.deleteTask(taskKey);
+        return GenericResponse.noReturnValue();
     }
 
     @RequestMapping(value = "{taskKey}/status", method = RequestMethod.PUT)
     public GenericResponse changeStatus(@PathVariable String taskKey, @RequestBody TaskStatusChangeRequest taskStatusChangeRequest) {
-        return taskService.changeStatus(taskKey, taskStatusChangeRequest);
+        return GenericResponse.successObject(taskService.changeStatus(taskKey, taskStatusChangeRequest));
     }
 
     @Autowired
-    public void setTaskService(TaskService taskService) {
+    public void setTaskService(TaskServiceImpl taskService) {
         this.taskService = taskService;
     }
 }

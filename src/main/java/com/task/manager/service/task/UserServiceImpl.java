@@ -1,18 +1,17 @@
 package com.task.manager.service.task;
 
 import com.task.manager.dto.GenericResponse;
-import com.task.manager.dto.user.UserLoginRequest;
 import com.task.manager.dto.user.UserRegisterRequest;
 import com.task.manager.entity.User;
 import com.task.manager.repository.UserRepository;
-import org.apache.commons.codec.digest.DigestUtils;
+import com.task.manager.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 
 @Service
-public class UserService {
+public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
 
@@ -21,8 +20,8 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-
-    public GenericResponse register(UserRegisterRequest userRegisterRequest) {
+    @Override
+    public GenericResponse addUser(UserRegisterRequest userRegisterRequest) {
 
         if (userRepository.findByEmail(userRegisterRequest.getEmail()).isPresent()){
             throw new RuntimeException("USER_EXISTS");
@@ -31,13 +30,14 @@ public class UserService {
         User user = User.createUser();
         user.setEmail(userRegisterRequest.getEmail());
         user.setFullName(userRegisterRequest.getFullName());
-        user.setPassword(DigestUtils.sha256Hex(Arrays.toString(userRegisterRequest.getPassword())));
+        user.setPassword(Arrays.toString(userRegisterRequest.getPassword()));
 
         userRepository.save(user);
         return GenericResponse.noReturnValue();
     }
 
-    public GenericResponse login(UserLoginRequest userLoginRequest) {
+    @Override
+    public User getUser(String email) {
         return null;
     }
 
