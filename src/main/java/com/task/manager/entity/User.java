@@ -1,5 +1,6 @@
 package com.task.manager.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,6 +40,7 @@ public class User {
             name = "TASK_ASSIGNEES",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "task_id"))
+    @JsonIgnore
     private List<Task> tasks;
 
 
@@ -49,7 +51,9 @@ public class User {
     }
 
     public User addTask(Task task){
-        this.tasks.add(task);
+        if (!this.tasks.contains(task)){
+            this.tasks.add(task);
+        }
         return this;
     }
 

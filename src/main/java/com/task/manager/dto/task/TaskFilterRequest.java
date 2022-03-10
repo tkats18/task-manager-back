@@ -15,10 +15,10 @@ import java.util.List;
 @AllArgsConstructor
 public class TaskFilterRequest {
 
-    private Timeline timeline;
+    private Timeline dueFilter;
 
-    private Task.TaskStatus taskStatus;
+    private List<Task.TaskStatus> statusFilter;
 
-    private List<String> assignees;
+    private List<String> userFilter;
 
 }

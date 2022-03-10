@@ -1,11 +1,7 @@
 package com.task.manager.controller;
 
 import com.task.manager.dto.GenericResponse;
-import com.task.manager.dto.task.TaskAddRequest;
-import com.task.manager.dto.task.TaskAssignRequest;
-import com.task.manager.dto.task.TaskFilterRequest;
-import com.task.manager.dto.task.TaskStatusChangeRequest;
-import com.task.manager.entity.Task;
+import com.task.manager.dto.task.*;
 import com.task.manager.service.task.TaskServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,17 +16,17 @@ public class TaskController {
     private TaskServiceImpl taskService;
 
     @RequestMapping(value = "add", method = RequestMethod.POST)
-    public Task addTask(@RequestBody TaskAddRequest taskAddRequest) {
+    public TaskResponse addTask(@RequestBody TaskAddRequest taskAddRequest) {
         return taskService.addTask(taskAddRequest);
     }
 
     @RequestMapping(value = "{taskKey}/assign", method = RequestMethod.PUT)
-    public Task assignTask(@PathVariable String taskKey, @RequestBody TaskAssignRequest taskAssignRequest) {
+    public TaskResponse assignTask(@PathVariable String taskKey, @RequestBody TaskAssignRequest taskAssignRequest) {
         return taskService.assignTask(taskKey, taskAssignRequest);
     }
 
     @RequestMapping(value = "search", method = RequestMethod.POST)
-    public List<Task> searchTasks(@RequestBody TaskFilterRequest taskFilterRequest) {
+    public List<TaskResponse> searchTasks(@RequestBody TaskFilterRequest taskFilterRequest) {
         return taskService.searchTasks(taskFilterRequest);
     }
 
